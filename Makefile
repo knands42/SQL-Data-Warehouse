@@ -4,7 +4,7 @@ POSTGRES_USER = postgres
 DB_NAME = datawarehouse
 
 # Docker commands
-.PHONY: up down clean psql exec-sql
+.PHONY: up down clean psql exec-sql tables
 
 # Start the container
 up:
@@ -38,6 +38,9 @@ exec-sql:
 info:
 	@echo "Listing schemas..."
 	@docker-compose exec postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) -c "\dn"
-	@echo "\nListing tables..."
-	@docker-compose exec postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) -c "\dt"
-	
+	@echo "== Bronze Layer Tables ==="
+	@docker-compose exec postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) -c "\dt bronze.*"
+	@echo "== Silver Layer Tables ==="
+	@docker-compose exec postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) -c "\dt silver.*"
+	@echo "== Gold Layer Tables ==="
+	@docker-compose exec postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) -c "\dt gold.*"
