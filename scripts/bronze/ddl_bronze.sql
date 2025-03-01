@@ -5,7 +5,7 @@ BEGIN;
 -- Create tables
 DROP TABLE IF EXISTS bronze.crm_cust_info CASCADE;
 CREATE TABLE bronze.crm_cust_info (
-    cst_int INT,
+    cst_id INT,
     cst_key VARCHAR(50),
     cst_firstname VARCHAR(50),
     cst_lastname VARCHAR(50),
