@@ -4,7 +4,7 @@ POSTGRES_USER = postgres
 DB_NAME = datawarehouse
 
 # Docker commands
-.PHONY: up down clean psql exec-sql tables
+.PHONY: up down clean psql exec-sql tables exec-bronze exec-silver
 
 # Start the container
 up:
@@ -33,6 +33,18 @@ exec-sql:
 		exit 1; \
 	fi
 	docker-compose exec -T postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) < $(SCRIPT)
+
+# Exec bronze layer
+exec-bronze:
+	@docker-compose exec -T postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) < ./scripts/bronze/ddl_bronze.sql
+	@docker-compose exec -T postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) < ./scripts/bronze/proc_load_bronze.sql
+
+exec-silver:
+	@docker-compose exec -T postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) < ./scripts/silver/ddl_silver.sql
+	@docker-compose exec -T postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) < ./scripts/silver/crm_cust_info/proc_load_silver.sql
+
+	@docker-compose exec -T postgres psql -U $(POSTGRES_USER) -d $(DB_NAME) < ./scripts/silver/crm_prd_info/proc_load_silver.sql
+
 
 # Show database info
 info:
